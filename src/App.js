@@ -17,18 +17,19 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <Navbar dark color="primary">
+        <Navbar dark color="primary">
           <div className="container">
             <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
           </div>
-        </Navbar> */}
+        </Navbar>
+        <Menu dishes={this.state.dishes} />
+        {/* Assignment Code
         <Navbar dark color="primary">
           <div className="container">
             <NavbarBrand href="/">Ứng dụng quản lý nhân sự V1.0</NavbarBrand>
           </div>
-        </Navbar>
-        {/* <Menu dishes={this.state.dishes} /> */}
-        <Staff />
+        </Navbar>        
+        <Staff /> */}
       </div>
     );
   }
