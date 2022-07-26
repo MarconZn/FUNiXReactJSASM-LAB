@@ -15,6 +15,13 @@ function Main() {
     department: DEPARTMENTS,
   });
 
+  function AddStaffHandle(event) {
+    const idAddStaff = Math.floor(Math.random() * 10000 + 1);
+    const newStaff = { ...event.newStaffAdd, id: idAddStaff };
+    const addStaff = staff.staff.push(newStaff);
+    console.log(newStaff);
+  }
+
   return (
     <div>
       <Header />
@@ -23,7 +30,7 @@ function Main() {
         <Route
           path="/nhanvien"
           exact
-          element={<StaffList staffs={staff.staff} />}
+          element={<StaffList onAdd={AddStaffHandle} staffs={staff.staff} />}
         />
         <Route
           path="/nhanvien/:nhanvienId"
