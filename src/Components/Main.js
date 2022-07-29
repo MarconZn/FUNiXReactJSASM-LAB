@@ -8,6 +8,13 @@ import StaffList from "./Stafflist";
 import StaffDetail from "./StaffDetail";
 import Department from "./Department";
 import Salary from "./Salary";
+import { API } from "../Shared/API";
+import { Provider } from "react-redux";
+
+async function FetchStaff() {
+  const response = await fetch(`${API}staffs`);
+  return await response.json();
+}
 
 function Main() {
   const [staff, setStaff] = useState({

@@ -12,7 +12,13 @@ import {
   Input,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { Control, LocalForm, Errors } from "react-redux-form";
+
+async function FetchStaff() {
+  const response = await fetch("https://rjs101xbackend.herokuapp.com/");
+  return await response.json();
+}
+
+console.log(FetchStaff());
 
 function StaffList(props) {
   const [newStaff, setNewStaff] = useState({
@@ -27,13 +33,13 @@ function StaffList(props) {
   });
 
   const [touched, setTouched] = useState({
-    name: true,
+    name: false,
     doB: false,
-    salaryScale: true,
+    salaryScale: false,
     startDate: false,
-    department: true,
-    annualLeave: true,
-    overTime: true,
+    department: false,
+    annualLeave: false,
+    overTime: false,
   });
 
   const [show, setShow] = useState(false);
@@ -117,18 +123,22 @@ function StaffList(props) {
       overTime: "",
       startDate: "",
     };
-
+    if (!touched.name) errors.name = "Yêu cầu điền thông tin";
+    else if (name.length < 3) errors.name = "Tên phải dài hơn 3 ký tự";
+    else if (name.length > 50) errors.name = "Tên không được quá 50 ký tự";
     if (!touched.doB || doB === "") errors.doB = "Yêu cầu nhập thông tin";
     if (!touched.startDate || startDate === "")
       errors.startDate = "Yêu cầu nhập thông tin";
-    if (!touched.overTime) errors.overTime = "Yêu cầu nhập thông tin";
+    if (!touched.department || department === "")
+      errors.department = "Yêu cầu nhập thông tin";
+    if (!touched.salaryScale || salaryScale === "")
+      errors.salaryScale = "Yêu cầu nhập thông tin";
+    if (!touched.annualLeave || annualLeave === "")
+      errors.annualLeave = "Yêu cầu nhập thông tin";
+    if (!touched.overTime || overTime === "")
+      errors.overTime = "Yêu cầu nhập thông tin";
     return errors;
   }
-
-  const required = (val) => val && val.length;
-  const maxLength = (len) => (val) => !val || val.length <= len;
-  const minLength = (len) => (val) => !val || val.length >= len;
-  const isNumber = (val) => !val || !isNaN(Number(val));
 
   const errors = Validate(
     newStaff.name,
@@ -151,12 +161,13 @@ function StaffList(props) {
       ? false
       : true;
 
-  const HandleSubmit = (event) => {
+  function HandleSubmit(event) {
+    event.preventDefault();
     const newStaffAdd = {
-      name: event.name,
+      name: newStaff.name,
       doB: newStaff.doB,
       startDate: newStaff.startDate,
-      department: { name: event.department },
+      department: { name: newStaff.department },
       salaryScale: newStaff.salaryScale,
       annualLeave: newStaff.annualLeave,
       overTime: newStaff.overTime,
@@ -164,7 +175,7 @@ function StaffList(props) {
     };
 
     props.onAdd({ newStaffAdd });
-  };
+  }
 
   return (
     <div className="container">
@@ -202,34 +213,24 @@ function StaffList(props) {
           Thêm nhân viên
         </ModalHeader>
         <ModalBody>
-          <LocalForm onSubmit={(value) => HandleSubmit(value)}>
+          <Form onSubmit={HandleSubmit}>
             <Row className="control-group mb-2">
               <Label htmlFor="name" md={4}>
                 Tên
               </Label>
               <Col md={8}>
-                <Control.text
-                  model=".name"
-                  className="form-control"
+                <Input
+                  type="text"
+                  className="form-control mb-2"
                   id="name"
                   name="name"
-                  validators={{
-                    required,
-                    maxLength: maxLength(30),
-                    minLength: minLength(3),
-                  }}
-                  onChange={(HandleInput, HandleBlur)}
+                  value={newStaff.name}
+                  valid={errors.name === ""}
+                  invalid={errors.name !== ""}
                   onBlur={HandleBlur}
+                  onChange={HandleInput}
                 />
-                <Errors
-                  model=".name"
-                  className="text-danger"
-                  messages={{
-                    required: "Yêu cầu điền thông tin",
-                    maxLength: "Tên không được quá 30 ký tự",
-                    minLength: "Tên phải nhiều hơn 3 ký tự",
-                  }}
-                />
+                <FormFeedback>{errors.name}</FormFeedback>
               </Col>
             </Row>
             <Row className="control-group mb-2">
@@ -242,7 +243,7 @@ function StaffList(props) {
                   id="doB"
                   name="doB"
                   className="mb-2"
-                  onChange={HandleInput}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
                   valid={errors.doB === ""}
                   invalid={errors.doB !== ""}
@@ -260,7 +261,7 @@ function StaffList(props) {
                   id="doW"
                   name="startDate"
                   className="mb-2"
-                  onChange={HandleInput}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
                   valid={errors.startDate === ""}
                   invalid={errors.startDate !== ""}
@@ -273,30 +274,24 @@ function StaffList(props) {
                 Phòng ban
               </Label>
               <Col md={8}>
-                <Control.select
-                  model=".department"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  validators={{
-                    required,
-                  }}
-                  onChange={(HandleInput, HandleBlur)}
+                <Input
+                  type="select"
+                  id="department"
+                  name="department"
+                  className="form-control mb-2"
+                  value={newStaff.department}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
+                  valid={errors.department === ""}
+                  invalid={errors.department !== ""}
                 >
                   <option>Sale</option>
                   <option>HR</option>
                   <option>Marketing</option>
                   <option>IT</option>
                   <option>Finance</option>
-                </Control.select>
-                <Errors
-                  model=".department"
-                  className="text-danger"
-                  messages={{
-                    required: "Yêu cầu chọn phòng ban",
-                  }}
-                />
+                </Input>
+                <FormFeedback>{errors.department}</FormFeedback>
               </Col>
             </Row>
             <Row className="control-group mb-2">
@@ -304,26 +299,18 @@ function StaffList(props) {
                 Lương
               </Label>
               <Col md={8}>
-                <Control.text
-                  model=".salaryScale"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  validators={{
-                    required,
-                    isNumber,
-                  }}
-                  onChange={(HandleInput, HandleBlur)}
+                <Input
+                  type="text"
+                  className="form-control mb-2"
+                  id="salaryScale"
+                  name="salaryScale"
+                  value={newStaff.salaryScale}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
+                  valid={errors.salaryScale === ""}
+                  invalid={errors.salaryScale !== ""}
                 />
-                <Errors
-                  model=".salaryScale"
-                  className="text-danger"
-                  messages={{
-                    required: "Yêu cầu điền thông tin",
-                    isNumber: "Thông tin phải nhập số",
-                  }}
-                />
+                <FormFeedback>{errors.salaryScale}</FormFeedback>
               </Col>
             </Row>
             <Row className="control-group mb-2">
@@ -331,26 +318,18 @@ function StaffList(props) {
                 Số ngày nghỉ còn lại
               </Label>
               <Col md={8}>
-                <Control.text
-                  model=".annualLeave"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  validators={{
-                    required,
-                    isNumber,
-                  }}
-                  onChange={(HandleInput, HandleBlur)}
+                <Input
+                  type="text"
+                  className="form-control mb-2"
+                  id="annualLeave"
+                  name="annualLeave"
+                  value={newStaff.annualLeave}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
+                  valid={errors.annualLeave === ""}
+                  invalid={errors.annualLeave !== ""}
                 />
-                <Errors
-                  model=".annualLeave"
-                  className="text-danger"
-                  messages={{
-                    required: "Yêu cầu điền thông tin",
-                    isNumber: "Thông tin phải nhập số",
-                  }}
-                />
+                <FormFeedback>{errors.annualLeave}</FormFeedback>
               </Col>
             </Row>
             <Row className="control-group mb-3">
@@ -358,26 +337,18 @@ function StaffList(props) {
                 Số ngày đã làm thêm
               </Label>
               <Col md={8}>
-                <Control.text
-                  model=".overTime"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  validators={{
-                    required,
-                    isNumber,
-                  }}
-                  onChange={HandleInput}
+                <Input
+                  type="text"
+                  className="form-control mb-3"
+                  id="overTime"
+                  name="overTime"
+                  value={newStaff.overTime}
+                  onChange={(HandleInput, HandleInput)}
                   onBlur={HandleBlur}
+                  valid={errors.overTime === ""}
+                  invalid={errors.overTime !== ""}
                 />
-                <Errors
-                  model=".overTime"
-                  className="text-danger"
-                  messages={{
-                    required: "Yêu cầu điền thông tin",
-                    isNumber: "Thông tin phải nhập số",
-                  }}
-                />
+                <FormFeedback>{errors.overTime}</FormFeedback>
               </Col>
             </Row>
             <Row className="control-group">
@@ -387,7 +358,7 @@ function StaffList(props) {
                 </Button>
               </Col>
             </Row>
-          </LocalForm>
+          </Form>
         </ModalBody>
       </Modal>
       <div className="row">{staffList}</div>
