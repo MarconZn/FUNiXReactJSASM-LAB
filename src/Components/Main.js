@@ -68,14 +68,14 @@ function Main() {
   }
 
   function DeleteStaffHandle(event) {
-    if (window.confirm("Delete?")) {
+    if (window.confirm("Bạn muốn xóa thông tin nhân viên?")) {
       dispatch(StaffSliceActions.deleteStaff(event.StaffDeleteId));
       fetch(`${API}staffs/${event.StaffDeleteId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json; charset=UTF-8" },
       }).then((res) => {
         if (res.ok) {
-          alert("Xoa thanh cong");
+          alert("Đã xóa thành công");
         }
       });
     }
@@ -90,7 +90,10 @@ function Main() {
   };
 
   function UpdateStaff(event) {
-    dispatch(StaffSliceActions.inputStaff(event));
+    if (window.confirm("Bạn muốn cấp nhật thông tin nhân viên?")) {
+      dispatch(StaffSliceActions.inputStaff(event));
+      alert("Cập nhật nhân viên thành công");
+    }
   }
 
   return (
