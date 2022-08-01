@@ -1,32 +1,104 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useState } from "react";
-import { STAFFS, DEPARTMENTS } from "../Shared/staffs";
 import StaffList from "./Stafflist";
 import StaffDetail from "./StaffDetail";
 import Department from "./Department";
 import Salary from "./Salary";
-import { API } from "../Shared/API";
-import { Provider } from "react-redux";
+import { StaffSliceActions } from "../Redux/Store";
+import { useSelector, useDispatch } from "react-redux";
+import DepartmentDetail from "./DepartmentDetail";
 
-async function FetchStaff() {
-  const response = await fetch(`${API}staffs`);
-  return await response.json();
-}
+import { API } from "../Shared/API";
+import { getAllByPlaceholderText } from "@testing-library/react";
 
 function Main() {
-  const [staff, setStaff] = useState({
-    staff: STAFFS,
-    department: DEPARTMENTS,
-  });
+  let update = "";
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return async () => {
+      const getData = async () => {
+        const response = await fetch(`${API}staffs`);
+        if (!response.ok) {
+          throw new Error("Fetch dữ liệu thất bại");
+        }
+        const data = await response.json();
+        return data;
+      };
+      try {
+        const StaffData = await getData();
+        dispatch(StaffSliceActions.inputStaff(StaffData));
+      } catch (error) {
+        console.log("Fetch dữ liệu thất bại");
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    return async () => {
+      const loadData = async () => {
+        const response = await fetch(`${API}staffs`, {
+          headers: { "Content-Type": "application/json" },
+          method: "PATCH",
+          body: JSON.stringify(update),
+        });
+        if (!response.ok) {
+          throw new Error("Fetch dữ liệu thất bại");
+        }
+        const data = await response.json();
+        return data;
+      };
+      try {
+        const staffAdd = await loadData();
+      } catch (error) {
+        console.log("Fetch dữ liệu thất bại");
+      }
+    };
+  }, [update]);
 
   function AddStaffHandle(event) {
-    const idAddStaff = Math.floor(Math.random() * 10000 + 1);
-    const newStaff = { ...event.newStaffAdd, id: idAddStaff };
-    const addStaff = staff.staff.push(newStaff);
-    console.log(newStaff);
+    const newStaff = { id: staff.staff.length, ...event.newStaffAdd };
+    dispatch(StaffSliceActions.addStaff(newStaff));
+    fetch(`${API}staffs`, {
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(newStaff),
+    }).then((res) => {
+      if (res.ok) {
+        alert("Thêm nhân viên thành công");
+      }
+    });
+  }
+
+  function DeleteStaffHandle(event) {
+    if (window.confirm("Delete?")) {
+      dispatch(StaffSliceActions.deleteStaff(event.StaffDeleteId));
+      fetch(`${API}staffs/${event.StaffDeleteId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json; charset=UTF-8" },
+      }).then((res) => {
+        if (res.ok) {
+          alert("Xoa thanh cong");
+        }
+      });
+    }
+  }
+
+  const STAFFS = useSelector((state) => state.staff);
+  const DEPARTMENT = useSelector((state) => state.department);
+
+  const staff = {
+    staff: STAFFS,
+    department: DEPARTMENT,
+  };
+
+  function UpdateStaff(event) {
+    // dispatch(StaffSliceActions.inputStaff(event));
+    update = event;
+    console.log(update);
   }
 
   return (
@@ -37,17 +109,39 @@ function Main() {
         <Route
           path="/nhanvien"
           exact
-          element={<StaffList onAdd={AddStaffHandle} staffs={staff.staff} />}
+          element={
+            <StaffList
+              onAdd={AddStaffHandle}
+              staffs={staff.staff}
+              Department={staff.department}
+              onDelete={DeleteStaffHandle}
+            />
+          }
         />
         <Route
           path="/nhanvien/:nhanvienId"
-          element={<StaffDetail StaffDetail={staff.staff} />}
+          element={
+            <StaffDetail
+              StaffDetail={staff.staff}
+              Department={staff.department}
+              onUpdateStaff={UpdateStaff}
+            />
+          }
         />
         <Route
           path="/bophan"
-          element={<Department dept={staff.department} />}
+          element={<Department dept={staff.department} staff={staff.staff} />}
         />
-        <Route path="/luong" element={<Salary salary={staff.staff} />} />
+        <Route
+          path="/bophan/:phongbanId"
+          element={
+            <DepartmentDetail
+              StaffDetail={staff.staff}
+              Department={staff.department}
+            />
+          }
+        />
+        <Route path="/luong" element={<Salary salaryStaff={staff.staff} />} />
       </Routes>
       <Footer />
     </div>

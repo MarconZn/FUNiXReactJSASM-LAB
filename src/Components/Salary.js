@@ -35,17 +35,13 @@ function RenderSalary(props) {
 }
 
 function Salary(props) {
-  const [sortSalary, setSortSalary] = useState(false);
-
-  const salary = props.salary
-    .sort((a, b) => (sortSalary ? b.salaryScale - a.salaryScale : a.id - b.id))
-    .map((ss) => {
-      return (
-        <div className="col-lg-4 col-md-6 col-sm-12 mt-2 mb-2" key={ss.id}>
-          <RenderSalary salary={ss} />
-        </div>
-      );
-    });
+  const salaryStaff = props.salaryStaff.map((ss) => {
+    return (
+      <div className="col-lg-4 col-md-6 col-sm-12 mt-2 mb-2" key={ss.id}>
+        <RenderSalary salary={ss} />
+      </div>
+    );
+  });
 
   return (
     <div className="container">
@@ -57,13 +53,8 @@ function Salary(props) {
           <BreadcrumbItem active>Bảng Lương</BreadcrumbItem>
         </Breadcrumb>
       </div>
-      <button
-        className="row btn btn-danger"
-        onClick={() => setSortSalary(!sortSalary)}
-      >
-        Sắp xếp theo hệ số lương
-      </button>
-      <div className="row shadow m-3">{salary}</div>
+
+      <div className="row shadow m-3">{salaryStaff}</div>
     </div>
   );
 }

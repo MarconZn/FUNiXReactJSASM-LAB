@@ -13,14 +13,8 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
-async function FetchStaff() {
-  const response = await fetch("https://rjs101xbackend.herokuapp.com/");
-  return await response.json();
-}
-
-console.log(FetchStaff());
-
 function StaffList(props) {
+  const StaffDepartment = props.Department;
   const [newStaff, setNewStaff] = useState({
     name: "",
     doB: "",
@@ -61,13 +55,21 @@ function StaffList(props) {
     })
     .map((staff) => {
       return (
-        <div className="text-center" key="staff.id">
+        <div className="text-center" key={staff.id}>
           <div className="col-12 mt-4">
             <Link to={`/nhanvien/${staff.id}`}>
               {<img src={staff.image} alt={staff.name} />}
               <p className="row bg-light m-1 h6">{staff.name}</p>
             </Link>
           </div>
+          <button
+            className="btn btn-danger m-1"
+            key="staff.id"
+            a-key={staff.id}
+            onClick={HandleDelete}
+          >
+            Xóa nhân viên
+          </button>
         </div>
       );
     });
@@ -163,11 +165,14 @@ function StaffList(props) {
 
   function HandleSubmit(event) {
     event.preventDefault();
+    const Department = StaffDepartment.find(
+      (department) => department.name === newStaff.department
+    );
     const newStaffAdd = {
       name: newStaff.name,
       doB: newStaff.doB,
       startDate: newStaff.startDate,
-      department: { name: newStaff.department },
+      departmentId: Department.id,
       salaryScale: newStaff.salaryScale,
       annualLeave: newStaff.annualLeave,
       overTime: newStaff.overTime,
@@ -175,6 +180,13 @@ function StaffList(props) {
     };
 
     props.onAdd({ newStaffAdd });
+    // window.alert("Thêm nhân viên thành công");
+    modalToggle();
+  }
+
+  function HandleDelete(event) {
+    const StaffDeleteId = event.target.getAttribute("a-key");
+    props.onDelete({ StaffDeleteId });
   }
 
   return (
@@ -243,7 +255,7 @@ function StaffList(props) {
                   id="doB"
                   name="doB"
                   className="mb-2"
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.doB === ""}
                   invalid={errors.doB !== ""}
@@ -261,7 +273,7 @@ function StaffList(props) {
                   id="doW"
                   name="startDate"
                   className="mb-2"
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.startDate === ""}
                   invalid={errors.startDate !== ""}
@@ -280,7 +292,7 @@ function StaffList(props) {
                   name="department"
                   className="form-control mb-2"
                   value={newStaff.department}
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.department === ""}
                   invalid={errors.department !== ""}
@@ -300,12 +312,12 @@ function StaffList(props) {
               </Label>
               <Col md={8}>
                 <Input
-                  type="text"
+                  type="number"
                   className="form-control mb-2"
                   id="salaryScale"
                   name="salaryScale"
                   value={newStaff.salaryScale}
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.salaryScale === ""}
                   invalid={errors.salaryScale !== ""}
@@ -319,12 +331,12 @@ function StaffList(props) {
               </Label>
               <Col md={8}>
                 <Input
-                  type="text"
+                  type="number"
                   className="form-control mb-2"
                   id="annualLeave"
                   name="annualLeave"
                   value={newStaff.annualLeave}
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.annualLeave === ""}
                   invalid={errors.annualLeave !== ""}
@@ -338,12 +350,12 @@ function StaffList(props) {
               </Label>
               <Col md={8}>
                 <Input
-                  type="text"
+                  type="number"
                   className="form-control mb-3"
                   id="overTime"
                   name="overTime"
                   value={newStaff.overTime}
-                  onChange={(HandleInput, HandleInput)}
+                  onChange={HandleInput}
                   onBlur={HandleBlur}
                   valid={errors.overTime === ""}
                   invalid={errors.overTime !== ""}

@@ -1,9 +1,9 @@
+// import { Navbar, NavbarBrand } from "reactstrap";
+// import Menu from "./Components/Menucomponent";
+// import Staff from "./Components/StaffListComponent";
 import React, { Component } from "react";
 import "./App.css";
-import { Navbar, NavbarBrand } from "reactstrap";
-import Menu from "./Components/Menucomponent";
 import { DISHES } from "./Shared/dishes";
-import Staff from "./Components/StaffListComponent";
 import Main from "./Components/Main";
 import { BrowserRouter } from "react-router-dom";
 

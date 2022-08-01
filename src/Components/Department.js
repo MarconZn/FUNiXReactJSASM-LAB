@@ -5,14 +5,16 @@ import { Link } from "react-router-dom";
 
 function RenderDept(props) {
   return (
-    <Card>
-      <CardTitle className="m-2 font-weight-bold text-uppercase h5">
-        {props.dept.name}
-      </CardTitle>
-      <CardBody>
-        <CardText>Số lượng nhân viên: {props.dept.numberOfStaff}</CardText>
-      </CardBody>
-    </Card>
+    <Link to={`/bophan/${props.dept.name}`}>
+      <Card>
+        <CardTitle className="m-2 font-weight-bold text-uppercase h5">
+          {props.dept.name}
+        </CardTitle>
+        <CardBody>
+          <CardText>Số lượng nhân viên: {props.staffNo.length}</CardText>
+        </CardBody>
+      </Card>
+    </Link>
   );
 }
 
@@ -20,7 +22,12 @@ function Department(props) {
   const departments = props.dept.map((dept) => {
     return (
       <div className="col-lg-4 col-md-6 col-sm-12 mt-2 mb-2" key={dept.id}>
-        <RenderDept dept={dept} />
+        <RenderDept
+          dept={dept}
+          staffNo={props.staff.filter(
+            (staff) => staff.departmentId === dept.id
+          )}
+        />
       </div>
     );
   });
