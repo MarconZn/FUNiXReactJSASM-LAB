@@ -152,12 +152,12 @@ function StaffDetail(props) {
       image: curStaff.image,
       id: curStaff.id,
     };
-    // const filterStaff = props.StaffDetail.filter(
-    //   (a) => a.id !== curStaffAdd.id
-    // );
-    // filterStaff.push(curStaffAdd);
-    // const updateStaffAdd = filterStaff.sort((a, b) => a.id - b.id);
-    props.onUpdateStaff(curStaff);
+    const filterStaff = props.StaffDetail.filter(
+      (a) => a.id !== curStaffAdd.id
+    );
+    filterStaff.push(curStaffAdd);
+    const updateStaffAdd = filterStaff.sort((a, b) => a.id - b.id);
+    props.onUpdateStaff(updateStaffAdd);
 
     modalToggle();
   }

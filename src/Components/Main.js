@@ -10,12 +10,9 @@ import Salary from "./Salary";
 import { StaffSliceActions } from "../Redux/Store";
 import { useSelector, useDispatch } from "react-redux";
 import DepartmentDetail from "./DepartmentDetail";
-
 import { API } from "../Shared/API";
-import { getAllByPlaceholderText } from "@testing-library/react";
 
 function Main() {
-  let update = "";
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,11 +37,7 @@ function Main() {
   useEffect(() => {
     return async () => {
       const loadData = async () => {
-        const response = await fetch(`${API}staffs`, {
-          headers: { "Content-Type": "application/json" },
-          method: "PATCH",
-          body: JSON.stringify(update),
-        });
+        const response = await fetch(`${API}departments`);
         if (!response.ok) {
           throw new Error("Fetch dữ liệu thất bại");
         }
@@ -52,12 +45,13 @@ function Main() {
         return data;
       };
       try {
-        const staffAdd = await loadData();
+        const Department = await loadData();
+        dispatch(StaffSliceActions.inputDepartment(Department));
       } catch (error) {
         console.log("Fetch dữ liệu thất bại");
       }
     };
-  }, [update]);
+  }, []);
 
   function AddStaffHandle(event) {
     const newStaff = { id: staff.staff.length, ...event.newStaffAdd };
@@ -96,9 +90,7 @@ function Main() {
   };
 
   function UpdateStaff(event) {
-    // dispatch(StaffSliceActions.inputStaff(event));
-    update = event;
-    console.log(update);
+    dispatch(StaffSliceActions.inputStaff(event));
   }
 
   return (
