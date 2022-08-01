@@ -92,7 +92,7 @@ function Main() {
   function UpdateStaff(event) {
     if (window.confirm("Bạn muốn cấp nhật thông tin nhân viên?")) {
       dispatch(StaffSliceActions.inputStaff(event));
-      alert("Cập nhật nhân viên thành công");
+      alert("Cập nhật nhân viên thành công!!!");
     }
   }
 
