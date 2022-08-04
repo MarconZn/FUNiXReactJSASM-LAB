@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import { Card, CardImg, CardText, CardBody, CardTitle } from "reactstrap";
 import dateFormat, { masks } from "dateformat";
 
-class DishDetail extends Component {
-  renderDish(dish) {
+function DishDetail(props) {
+  // CHUC NANG RENDER THONG TIN MON AN
+  function RenderDish(dish) {
     return (
       <div className="col-12 col-md-5 m-1">
         <Card>
@@ -17,8 +18,9 @@ class DishDetail extends Component {
     );
   }
 
-  RenderComments(comments) {
-    if (comments != null) {
+  // CHUC NANG RENDER THONG TIN COMMENT
+  function RenderComments(comments) {
+    if (comments !== null) {
       return (
         <div className="col-12 col-md-5 m-1">
           <h4>Comments</h4>
@@ -42,20 +44,16 @@ class DishDetail extends Component {
     }
   }
 
-  render() {
-    if (this.props.dish != null) {
-      return (
-        <div className="container">
-          <div className="row">
-            {this.renderDish(this.props.dish)}
-            {this.RenderComments(this.props.dish.comments)}
-          </div>
-        </div>
-      );
-    } else {
-      return <div></div>;
-    }
-  }
+  return props.dish === undefined ? (
+    <div></div>
+  ) : (
+    <div className="container">
+      <div className="row">
+        {RenderDish(props.dish)}
+        {RenderComments(props.dish.comments)}
+      </div>
+    </div>
+  );
 }
 
 export default DishDetail;
