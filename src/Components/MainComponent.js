@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Navbar, NavbarBrand } from "reactstrap";
 import { DISHES } from "../Shared/dishes";
+import { Route, Routes, Navigate } from "react-router-dom";
 import DishDetail from "./DishdetailComponent";
 import Menu from "./MenuComponent";
+import Header from "./HeaderComponent";
+import Footer from "./FooterComponent";
+import Home from "./HomeComponent";
 
 function Main(props) {
   const [dishes, setDishes] = useState({
@@ -12,22 +15,29 @@ function Main(props) {
 
   return (
     <div>
-      <Navbar dark color="primary">
-        <div className="container">
-          <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
-        </div>
-      </Navbar>
+      <Header />
       <div className="container">
-        <Menu
-          dishes={dishes.dish}
-          onClick={(dish) => setDishes({ ...dishes, selectedDish: dish })}
-        />
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/home" />} />
+          <Route path="/home" element={<Home />} />
+          <Route
+            path="/menu"
+            element={
+              <Menu
+                dishes={dishes.dish}
+                onClick={(dish) => setDishes({ ...dishes, selectedDish: dish })}
+              />
+            }
+          />
+        </Routes>
+
         <DishDetail
           dish={
             dishes.dish.filter((dish) => dish.id === dishes.selectedDish)[0]
           }
         />
       </div>
+      <Footer />
     </div>
   );
 }
