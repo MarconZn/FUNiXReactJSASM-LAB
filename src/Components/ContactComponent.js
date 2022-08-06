@@ -38,8 +38,10 @@ function Contact(props) {
   }
 
   function HandleSubmit(event) {
-    console.log("Current State is: " + JSON.stringify(feedback));
-    alert("Current State is: " + JSON.stringify(feedback));
+    event.preventDefault();
+    const newFeedback = feedback;
+    delete newFeedback.touched;
+    props.onAdd({ newFeedback });
   }
 
   function HandleBlur(event) {

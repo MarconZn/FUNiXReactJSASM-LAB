@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { useState } from "react";
 import StaffList from "./Stafflist";
 import StaffDetail from "./StaffDetail";
 import Department from "./Department";

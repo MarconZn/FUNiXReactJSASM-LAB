@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import dateFormat, { masks } from "dateformat";
+import { baseUrl } from "../Shared/baseUrl";
 
 function DishDetail(props) {
   // CHUC NANG RENDER THONG TIN MON AN
@@ -17,7 +18,7 @@ function DishDetail(props) {
     return (
       <div>
         <Card>
-          <CardImg width="100%" src={dish.image} value={dish.name} />
+          <CardImg width="100%" src={baseUrl + dish.image} value={dish.name} />
           <CardBody>
             <CardTitle style={{ color: "black" }}>{dish.name}</CardTitle>
             <CardText>{dish.description}</CardText>
